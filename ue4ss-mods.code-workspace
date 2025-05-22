@@ -1,0 +1,14 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "Lua.workspace.maxPreload": 50000,
+    "Lua.workspace.preloadFileSize": 50000,
+    "Lua.workspace.library": [
+      "types"
+    ]
+  }
+}
