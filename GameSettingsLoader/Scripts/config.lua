@@ -1,10 +1,13 @@
 return {
   name = "GameSettingsLoader",
   author = 'xEpicBradx',
-  version = "2.0.0",
+  version = "3.1.0",
+
+  -- Print extra logs to help with debugging
+  debug = false,
 
   -- Oblivion Game Rule -> UnrealEngine VOblivionInitialSettings
-  oblivion_to_unreal_bindings = {
+  tes4_to_ue5_bindings = {
     fMoveCharWalkMax = "DefaultMoveCharWalkMax",
     fMoveCharWalkMin = "DefaultMoveCharWalkMin",
     fMoveCreatureWalkMax = "DefaultMoveCreatureWalkMax",
