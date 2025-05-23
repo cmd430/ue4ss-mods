@@ -1,6 +1,8 @@
 # Game Settings Loader
+Yep, yet another UE4SS GameSettingsLoader
 
 ## Features
+
 - Load TES4 Game Settings (GameSettings)
   - Automatically resolves TES4 -> UE5 Settings if required
 - Load UE5 Game Settings (VOblivionInitialSettings)
@@ -10,8 +12,8 @@
 - Loads from INIs in `GameSettings` directory
 
 
-### Example INI
-```INI
+## Example INI
+```ini
 [GameSettings]
 fActorStrengthEncumbranceMult=8.0
 iNumberActorsInCombatPlayer=80
@@ -34,8 +36,7 @@ r.LightMaxDrawDistanceScale=2
 r.Lumen.SampleFog=1
 ```
 
-#### Install
-
+## Install
 Put the mod into the `Win64\ue4ss\Mods` directory and place `.ini` files into the `Win64\GameSettings` directory as follows
 
 ```
@@ -48,6 +49,8 @@ OblivionRemastered
     └───ue4ss
         └───Mods
             └───GameSettingsLoader
+                │   Readme.md
+                │
                 └───Scripts
                     │   config.lua
                     │   lib.lua
