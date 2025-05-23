@@ -41,21 +41,22 @@ Put the mod into the `Win64\ue4ss\Mods` directory and place `.ini` files into th
 
 ```
 OblivionRemastered
-└───Win64
-    └───GameSettings
-    │   │   example.ini
-    │   │   ...
-    │
-    └───ue4ss
-        └───Mods
-            └───GameSettingsLoader
-                │   Readme.md
-                │
-                └───Scripts
-                    │   config.lua
-                    │   lib.lua
-                    │   LIP.lua
-                    │   main.lua
+└───Binaries
+    └───Win64
+        └───GameSettings
+        │   │   example.ini
+        │   │   ...
+        │
+        └───ue4ss
+            └───Mods
+                └───GameSettingsLoader
+                    │   Readme.md
+                    │
+                    └───Scripts
+                        │   config.lua
+                        │   lib.lua
+                        │   LIP.lua
+                        │   main.lua
 ```
 
 ## Download
