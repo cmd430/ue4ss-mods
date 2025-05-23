@@ -20,7 +20,7 @@ local Settings = {
 Info(string.format("Started - version: %s - author: %s", config.version, config.author))
 
 -- Loop over inis in GameSettings directory
-for _, ini in FindFiles("OBSE\\Plugins\\GameSettings", ".ini") do
+for _, ini in FindFiles(config.game_settings_path, ".ini") do
   Info("Loading settings from '" .. ini .. "'")
 
   local current = INIParser.load(ini)

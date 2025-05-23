@@ -1,10 +1,10 @@
 return {
   name = "GameSettingsLoader",
   author = 'xEpicBradx',
-  version = "3.1.0",
+  version = "3.1.1",
 
-  -- Print extra logs to help with debugging
-  debug = false,
+  debug = false,                       -- Print extra logs to help with debugging
+  game_settings_path = "GameSettings", -- path for GameSettings dir, example "OBSE\\Plugins\\GameSettings"
 
   -- Oblivion Game Rule -> UnrealEngine VOblivionInitialSettings
   tes4_to_ue5_bindings = {
