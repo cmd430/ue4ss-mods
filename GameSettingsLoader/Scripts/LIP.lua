@@ -1,16 +1,16 @@
 --[[
 	Copyright (c) 2012 Carreras Nicolas
-	
+
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
 	in the Software without restriction, including without limitation the rights
 	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 	copies of the Software, and to permit persons to whom the Software is
 	furnished to do so, subject to the following conditions:
-	
+
 	The above copyright notice and this permission notice shall be included in all
 	copies or substantial portions of the Software.
-	
+
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,6 +22,7 @@
 --- Lua INI Parser.
 -- It has never been that simple to use INI files with Lua.
 --@author Dynodzzo
+--@update [Bred 2025-05-23] - Patched to allow periods (.) in keynames
 
 local LIP = {};
 
@@ -39,7 +40,8 @@ function LIP.load(fileName)
 			section = tonumber(tempSection) and tonumber(tempSection) or tempSection;
 			data[section] = data[section] or {};
 		end
-		local param, value = line:match('^([%w|_]+)%s-=%s-(.+)$');
+		-- local param, value = line:match('^([%w|_]+)%s-=%s-(.+)$');
+		local param, value = line:match('^([%w|_|%.]+)%s-=%s-(.+)$'); -- Patched to allow periods (.) in keynames
 		if(param and value ~= nil)then
 			if(tonumber(value))then
 				value = tonumber(value);
