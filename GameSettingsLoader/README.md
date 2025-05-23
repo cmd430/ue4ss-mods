@@ -57,3 +57,6 @@ OblivionRemastered
                     │   LIP.lua
                     │   main.lua
 ```
+
+## Download
+You can grab the latest from [Releases](https://github.com/cmd430/ue4ss-mods/releases/)
