@@ -4,19 +4,19 @@ local UEHelpers = require('UEHelpers')
 
 ---Print logs with the mod name
 ---@param message string
----@param level 'I' | 'W' | 'E' | 'D'
+---@param level 'L' | 'I' | 'W' | 'E' | 'D'
 function PrintLog (message, level)
-  if level == 'DEBUG' and config.debug ~= true then
+  if level == 'D' and config.debug ~= true then
     return
   end
 
   return print(string.format('[%s] [%s] %s\n', config.name, level, message))
 end
 
----Print log alias for Info
+---Print message to log
 ---@param message string
 function Log (message)
-  return Info(message)
+  return PrintLog(message, 'L')
 end
 
 ---Print info log
