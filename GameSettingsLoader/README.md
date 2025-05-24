@@ -10,11 +10,13 @@ Yep, yet another UE4SS GameSettingsLoader
 - Load UE5 Physics Settings (PhysicsSettings)
 - Set UE5 CVars (ConsoleVariables)
 - Loads from INIs in `GameSettings` directory
+  - INI files support inline comments using `;` or normal comments using either `;` or `#`
 
 
 ## Example INI
 ```ini
 [GameSettings]
+# This section is for settings that change in the TES4 side
 fActorStrengthEncumbranceMult=8.0
 iNumberActorsInCombatPlayer=80
 iAINumberActorsComplexScene=100
@@ -26,18 +28,22 @@ fRemoveExcessDeadTime=400.0
 fRemoveExcessComplexDeadTime=200.0
 
 [VOblivionInitialSettings]
+# This section is for settings that change on the UE5 side
 AirControlModifier=0.500000
 
 [PhysicsSettings]
+# UE5 physics settings can be changed here
 DefaultGravityZ=-2250
 
 [ConsoleVariables]
-r.LightMaxDrawDistanceScale=2
-r.Lumen.SampleFog=1
+# UE console variables can be set here
+r.LightMaxDrawDistanceScale=2 ; 2x light distance
+r.Lumen.SampleFog=1           ; enable fog in water reflections
 ```
 
 ## Install
-Put the mod into the `Win64\ue4ss\Mods` directory and place `.ini` files into the `Win64\GameSettings` directory as follows
+ 1. Put the mod into the `OblivionRemastered\Binaries\Win64\ue4ss\Mods` directory
+ 2. Put any `.ini` files into the `OblivionRemastered\Binaries\Win64\GameSettings` directory
 
 ```
 OblivionRemastered
@@ -55,7 +61,6 @@ OblivionRemastered
                     └───Scripts
                         │   config.lua
                         │   lib.lua
-                        │   LIP.lua
                         │   main.lua
 ```
 
