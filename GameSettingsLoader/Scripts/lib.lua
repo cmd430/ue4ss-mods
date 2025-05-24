@@ -228,3 +228,50 @@ function FindFiles (path, filter, namesOnly)
 
   return pairs(files)
 end
+
+
+---Takes a path\\to\\file.ini
+---@param path string
+---@returns table<<K>, <V>>
+function ParseINI (path)
+  local ini = io.open(path, 'r')
+  local parsed = {}
+  local currentSection = nil
+
+  if ini == nil then
+    return parsed
+  end
+
+  for line in ini:lines() do
+    -- match ini sections i.e [Section]
+    local section = line:match('^%[([^%[%]]+)%][\r]?$')
+
+    if section then
+      currentSection = section
+      -- merge duplicate sections into single table or create new table if new section
+      parsed[currentSection] = parsed[currentSection] or {}
+    end
+
+    local param, value = line:match('^([%w|_|%.]+)%s*=%s*(.*)[\r]?$')
+
+    if param and value ~= nil then
+      -- match key value pairs ignoring in-line comments i.e key=value ; comment
+      value = value:match('^(.-)%s-;.-$') or value:match('^(.-)%s-$')
+
+      -- number values to number, boolean values to boolean
+      if tonumber(value) then
+        value = tonumber(value)
+      elseif value == 'true' then
+        value = true
+      elseif value == 'false' then
+        value = false
+      end
+
+      parsed[currentSection][param] = value
+    end
+  end
+
+  ini:close()
+
+  return parsed
+end

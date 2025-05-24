@@ -2,8 +2,7 @@
 require("lib")
 
 -- Import config and INI parsing library
-local config = require("config")
-local INIParser = require("LIP")
+local config = require('config')
 
 -- Get UE Objects
 local GameSettingInstance = EnsureStaticObject("/Script/UE5AltarPairing.Default__VOblivionInitialSettings")
@@ -23,7 +22,7 @@ Info(string.format("Started - version: %s - author: %s", config.version, config.
 for _, ini in FindFiles(config.game_settings_path, ".ini") do
   Info("Loading settings from '" .. ini .. "'")
 
-  local current = INIParser.load(ini)
+  local current = ParseINI(ini)
 
   -- This section is for TES4 game settings that are mapped to VOblivionInitialSettings
   local tes4Section = current.GameSettings
