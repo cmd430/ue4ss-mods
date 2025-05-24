@@ -19,25 +19,25 @@ function Log (message)
   return PrintLog(message, 'L')
 end
 
----Print info log
+---Print info message to log
 ---@param message string
 function Info (message)
   return PrintLog(message, 'I')
 end
 
----Print warn log
+---Print warn message to log
 ---@param message string
 function Warn (message)
   return PrintLog(message, 'W')
 end
 
----Print error log
+---Print error message to log
 ---@param message string
 function Error (message)
   return PrintLog(message, 'E')
 end
 
----Print debug log
+---Print debug message to log
 ---@param message string
 function Debug (message)
   return PrintLog(message, 'D')
@@ -253,11 +253,12 @@ end
 function ParseINI (path)
   local ini = io.open(path, 'r')
   local parsed = {}
-  local currentSection = nil
 
   if ini == nil then
     return parsed
   end
+
+  local currentSection = nil
 
   for line in ini:lines() do
     -- match ini sections i.e [Section]
