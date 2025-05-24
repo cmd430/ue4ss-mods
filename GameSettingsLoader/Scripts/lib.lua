@@ -80,6 +80,10 @@ end
 ---@param objectInstance UObject
 ---@param settings table
 function UpdateValues (objectInstance, settings)
+  if next(settings) == nil then -- exit early if nothing to configure
+    return
+  end
+
   local objectFName = objectInstance:GetFName()
   local objectName = 'Unknown UObject'
 
@@ -108,6 +112,10 @@ end
 ---Update Console Variables via console
 ---@param settings table
 function UpdateCVars (settings)
+  if next(settings) == nil then -- exit early if nothing to configure
+    return
+  end
+
   local KismetSystemLibrary = UEHelpers.GetKismetSystemLibrary()
   local EngineInstance = FindFirstOf('Engine')
 
@@ -131,6 +139,10 @@ end
 ---Update TES4 Game Settings via console
 ---@param settings table
 function UpdateGameSettings (settings)
+  if next(settings) == nil then -- exit early if nothing to configure
+    return
+  end
+
   local GameSaveLoad = '/Script/Altar.VLevelChangeData:OnFadeToBlackBeginEventReceived'
 
   ExecuteInGameThread(function ()
