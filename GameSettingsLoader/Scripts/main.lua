@@ -4,6 +4,9 @@ require('lib')
 -- Import config and INI parsing library
 local config = require('config')
 
+-- Print mod version and author on load
+Info(string.format('version: %s - author: %s', config.version, config.author))
+
 -- Get UE Objects
 local GameSettingInstance = EnsureStaticObject('/Script/UE5AltarPairing.Default__VOblivionInitialSettings')
 local PhysicsSettingsInstance = EnsureStaticObject('/Script/Engine.Default__PhysicsSettings')
@@ -15,8 +18,6 @@ local Settings = {
   Physics = {},
   Console = {}
 }
-
-Info(string.format('version: %s - author: %s', config.version, config.author))
 
 -- Loop over inis in GameSettings directory
 for _, ini in FindFiles(config.game_settings_path, '.ini') do
