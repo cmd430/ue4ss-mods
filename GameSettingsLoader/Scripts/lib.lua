@@ -120,7 +120,7 @@ function UpdateCVars (settings)
       return Error('Unable to run command (command is nil)')
     end
 
-    Info(string.format('Running %s', command))
+    Info(string.format('Running command "%s"', command))
     ExecuteInGameThread(function ()
       KismetSystemLibrary:ExecuteConsoleCommand(EngineInstance, command, nil)
     end)
@@ -151,7 +151,7 @@ function UpdateGameSettings (settings)
           return Error('Unable to run command (command is nil)')
         end
 
-        Info(string.format('Running %s', command))
+        Info(string.format('Running command "%s"', command))
         ExecuteInGameThread(function ()
           KismetSystemLibrary:ExecuteConsoleCommand(PlayerController.player, command, PlayerController)
         end)
