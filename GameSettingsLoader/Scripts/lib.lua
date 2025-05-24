@@ -1,16 +1,16 @@
-local config = require("config")
-local UEHelpers = require("UEHelpers")
+local config = require('config')
+local UEHelpers = require('UEHelpers')
 
 
 ---Print logs with the mod name
 ---@param message string
----@param level "I" | "W" | "E" | "D"
+---@param level 'I' | 'W' | 'E' | 'D'
 function PrintLog (message, level)
-  if level == "DEBUG" and config.debug ~= true then
+  if level == 'DEBUG' and config.debug ~= true then
     return
   end
 
-  return print(string.format("[%s] [%s] %s\n", config.name, level, message))
+  return print(string.format('[%s] [%s] %s\n', config.name, level, message))
 end
 
 ---Print log alias for Info
@@ -22,40 +22,41 @@ end
 ---Print info log
 ---@param message string
 function Info (message)
-  return PrintLog(message, "I")
+  return PrintLog(message, 'I')
 end
 
 ---Print warn log
 ---@param message string
 function Warn (message)
-  return PrintLog(message, "W")
+  return PrintLog(message, 'W')
 end
 
 ---Print error log
 ---@param message string
 function Error (message)
-  return PrintLog(message, "E")
+  return PrintLog(message, 'E')
 end
 
 ---Print debug log
 ---@param message string
 function Debug (message)
-  return PrintLog(message, "D")
+  return PrintLog(message, 'D')
 end
 
 
 ---Get Static Object or wait until its ready
 ---@param objectName string
+---@return UObject
 function EnsureStaticObject (objectName)
-  Debug(string.format("EnsureStaticObject: %s", objectName))
+  Debug(string.format('EnsureStaticObject: %s', objectName))
   local objectToFind = nil
 
   while not (objectToFind and objectToFind:IsValid()) do
-    Debug(string.format("Calling StaticFindObject: %s", objectName))
+    Debug(string.format('Calling StaticFindObject: %s', objectName))
     objectToFind = StaticFindObject(objectName)
   end
 
-  Debug("EnsureStaticObject Finished")
+  Debug('EnsureStaticObject Finished')
   -- Finally return the object
   return objectToFind
 end
@@ -63,7 +64,7 @@ end
 
 ---Swap a tables keys with its values
 ---@param table table
----@return table
+---@returns table<<table.V>, <table.K>>
 function FlipTable (table)
    local flipped = {}
 
@@ -79,21 +80,26 @@ end
 ---@param objectInstance UObject
 ---@param settings table
 function UpdateValues (objectInstance, settings)
-  local objectName = objectInstance:GetFName():ToString()
+  local objectFName = objectInstance:GetFName()
+  local objectName = 'Unknown UObject'
 
-  Info("Configuring " .. objectName)
+  if objectFName then
+    objectName = objectFName:ToString()
+  end
+
+  Info('Configuring ' .. objectName)
 
   if objectInstance:IsValid() == false then
-    return Error("Failed to configure " .. objectName)
+    return Error('Failed to configure ' .. objectName)
   end
 
   -- Try changing the default object settings
   for setting, value in pairs(settings) do
-    if not string.find(tostring(objectInstance:GetPropertyValue(setting)), "UObject") then
-      Info(string.format("Updating %s -> %s", setting, value))
+    if not string.find(tostring(objectInstance:GetPropertyValue(setting)), 'UObject') then
+      Info(string.format('Updating %s -> %s', setting, value))
       objectInstance:SetPropertyValue(setting, value)
     else
-      Error(string.format("Failed to set %s -> %s", setting, value))
+      Error(string.format('Failed to set %s -> %s', setting, value))
     end
   end
 end
@@ -102,19 +108,19 @@ end
 ---Update Console Variables via console
 ---@param settings table
 function UpdateCVars (settings)
-  local KismetSystemLibrary = EnsureStaticObject('/Script/Engine.Default__KismetSystemLibrary')
+  local KismetSystemLibrary = UEHelpers.GetKismetSystemLibrary()
   local EngineInstance = FindFirstOf('Engine')
 
-  Info("Configuring Console Variables")
+  Info('Configuring Console Variables')
 
   for cmd, value in pairs(settings) do
-    local command = cmd .. " " .. value
+    local command = cmd .. ' ' .. value
 
     if command == '' or command == nil then
-      return Error("Unable to run command (command is nil)")
+      return Error('Unable to run command (command is nil)')
     end
 
-    Info(string.format("Running %s", command))
+    Info(string.format('Running %s', command))
     ExecuteInGameThread(function ()
       KismetSystemLibrary:ExecuteConsoleCommand(EngineInstance, command, nil)
     end)
@@ -125,70 +131,66 @@ end
 ---Update TES4 Game Settings via console
 ---@param settings table
 function UpdateGameSettings (settings)
-  local GameSaveLoad = "/Script/Altar.VLevelChangeData:OnFadeToBlackBeginEventReceived"
+  local GameSaveLoad = '/Script/Altar.VLevelChangeData:OnFadeToBlackBeginEventReceived'
 
   ExecuteInGameThread(function ()
-    -- make sure object is ready to hook
-    EnsureStaticObject(GameSaveLoad)
-
     -- hook id refs
-    local PreId
-    local PostId
+    local PreId, PostId
 
     -- hook event and keep id refs so we can unhook
-    PreId, PostId = RegisterHook(GameSaveLoad, function (context)
+    PreId, PostId = RegisterHook(GameSaveLoad, function ()
       local PlayerController = UEHelpers.GetPlayerController()
       local KismetSystemLibrary = UEHelpers.GetKismetSystemLibrary()
 
-      Info("Configuring Game Settings")
+      Info('Configuring Game Settings')
 
       for cmd, value in pairs(settings) do
-        local command = "SetGameSetting " .. cmd .. " " .. value
+        local command = 'SetGameSetting ' .. cmd .. ' ' .. value
 
         if command == '' or command == nil then
-          return Error("Unable to run command (command is nil)")
+          return Error('Unable to run command (command is nil)')
         end
 
-        Info(string.format("Running %s", command))
+        Info(string.format('Running %s', command))
         ExecuteInGameThread(function ()
           KismetSystemLibrary:ExecuteConsoleCommand(PlayerController.player, command, PlayerController)
         end)
       end
 
       -- Unhook once the function has been called once
-      if PreId then
-        UnregisterHook(GameSaveLoad, PreId, PostId)
-      end
+      UnregisterHook(GameSaveLoad, PreId, PostId)
     end)
   end)
 end
 
 
 ---Get the release type, name, and bin dir of the game
----@return { Name: string, ReleaseType: "Win64" | "WinGDK", BinariesDirectory: table } | nil
+---@returns { Name: string, ReleaseType: 'Win64' | 'WinGDK', BinariesDirectory: table<<K>, <V>> }
 function GameData ()
-  local GameDirectory = IterateGameDirectories().Game
+  local GameDirectory = IterateGameDirectories()['Game']
   local GameName = GameDirectory.__name
   local BinariesDirectory = GameDirectory.Binaries
 
+  -- is Steam Release
   if BinariesDirectory.Win64 ~= nil then
     for _,file in pairs(BinariesDirectory.Win64.__files) do
-      if file.__name == GameName .. "-Win64-Shipping.exe" then
+      if file.__name == GameName .. '-Win64-Shipping.exe' then
         return {
           Name = GameName,
-          ReleaseType = "Win64",
+          ReleaseType = 'Win64',
           BinariesDirectory = BinariesDirectory.Win64
         }
       end
     end
   end
 
+  -- is Gamepass Release
   if BinariesDirectory.WinGDK ~= nil then
     for _,file in pairs(BinariesDirectory.WinGDK.__files) do
-      if file.__name ==  GameName .. "-WinGDK-Shipping.exe" then
+      if file.__name ==  GameName .. '-WinGDK-Shipping.exe' then
         return {
           Name = GameName,
-          ReleaseType = "WinGDK",
+          ReleaseType = 'WinGDK',
           BinariesDirectory = BinariesDirectory.WinGDK
         }
       end
@@ -197,31 +199,34 @@ function GameData ()
 end
 
 
----Takes a path\\to\\dir, optional filter ".ini", will append the path to the file in the table unless namesOnly is set to true
+---Takes a path\\to\\dir, optional filter '.ini', will append the path to the file in the table unless namesOnly is set to true
 ---@param path string
 ---@param filter? string
 ---@param namesOnly? boolean
+---@returns fun(table: table<<K>, <V>>, index?: <K>):<K>, <V>
 function FindFiles (path, filter, namesOnly)
   local files = {}
-  local folders = path:gmatch("([^\\]+)")
   local currentPath = GameData().BinariesDirectory
 
-  for folder in folders do
-    if currentPath[folder] ~= nil then
-      currentPath = currentPath[folder]
+  -- follow path making sure dirs exist, returns early if any dir missing
+  for directory in path:gmatch('([^\\]+)') do
+    if currentPath[directory] ~= nil then
+      currentPath = currentPath[directory]
     else
       return pairs(files)
     end
   end
 
+  -- loop over files in path
   for _, fileobject in pairs(currentPath.__files) do
     local currentFile = fileobject.__name
 
-    if (filter == nil or filter ~= nil and currentFile:sub(-4):lower() == filter) then
-      if (namesOnly == true) then
+    -- only add files if filter not set or if they match the filter
+    if filter == nil or filter ~= nil and currentFile:sub(-4):lower() == filter then
+      if namesOnly == true then
         table.insert(files, fileobject.__name)
       else
-        table.insert(files, path .. "\\" .. fileobject.__name)
+        table.insert(files, path .. '\\' .. fileobject.__name)
       end
     end
   end
