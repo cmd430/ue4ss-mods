@@ -129,9 +129,7 @@ function UpdateCVars (settings)
     end
 
     Info(string.format('Running command "%s"', command))
-    ExecuteInGameThread(function ()
-      KismetSystemLibrary:ExecuteConsoleCommand(EngineInstance, command, nil)
-    end)
+    KismetSystemLibrary:ExecuteConsoleCommand(EngineInstance, command, nil)
   end
 end
 
@@ -144,34 +142,28 @@ function UpdateGameSettings (settings)
   end
 
   local GameSaveLoad = '/Script/Altar.VLevelChangeData:OnFadeToBlackBeginEventReceived'
+  local PreId, PostId
 
-  ExecuteInGameThread(function ()
-    -- hook id refs
-    local PreId, PostId
+  -- hook event and keep id refs so we can unhook
+  PreId, PostId = RegisterHook(GameSaveLoad, function ()
+    local PlayerController = UEHelpers.GetPlayerController()
+    local KismetSystemLibrary = UEHelpers.GetKismetSystemLibrary()
 
-    -- hook event and keep id refs so we can unhook
-    PreId, PostId = RegisterHook(GameSaveLoad, function ()
-      local PlayerController = UEHelpers.GetPlayerController()
-      local KismetSystemLibrary = UEHelpers.GetKismetSystemLibrary()
+    Info('Configuring Game Settings')
 
-      Info('Configuring Game Settings')
+    for cmd, value in pairs(settings) do
+      local command = 'SetGameSetting ' .. cmd .. ' ' .. value
 
-      for cmd, value in pairs(settings) do
-        local command = 'SetGameSetting ' .. cmd .. ' ' .. value
-
-        if command == '' or command == nil then
-          return Error('Unable to run command (command is nil)')
-        end
-
-        Info(string.format('Running command "%s"', command))
-        ExecuteInGameThread(function ()
-          KismetSystemLibrary:ExecuteConsoleCommand(PlayerController.player, command, PlayerController)
-        end)
+      if command == '' or command == nil then
+        return Error('Unable to run command (command is nil)')
       end
 
-      -- Unhook once the function has been called once
-      UnregisterHook(GameSaveLoad, PreId, PostId)
-    end)
+      Info(string.format('Running command "%s"', command))
+      KismetSystemLibrary:ExecuteConsoleCommand(PlayerController.player, command, PlayerController)
+    end
+
+    -- Unhook once the function has been called once
+    UnregisterHook(GameSaveLoad, PreId, PostId)
   end)
 end
 

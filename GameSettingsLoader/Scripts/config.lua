@@ -1,7 +1,7 @@
 return {
   name = 'GameSettingsLoader',
   author = 'xEpicBradx',
-  version = '3.2.0',
+  version = '3.2.1',
 
   debug = false,                       -- Print extra logs to help with debugging
   game_settings_path = 'GameSettings', -- path for GameSettings dir, example 'OBSE\\Plugins\\GameSettings'
