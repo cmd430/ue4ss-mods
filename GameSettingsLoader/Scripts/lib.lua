@@ -129,7 +129,7 @@ function UpdateCVars (settings)
     end
 
     Info(string.format('Running command "%s"', command))
-    KismetSystemLibrary:ExecuteConsoleCommand(EngineInstance, command, nil)
+    KismetSystemLibrary:ExecuteConsoleCommand(EngineInstance, command, nil, nil)
   end
 end
 
@@ -159,7 +159,7 @@ function UpdateGameSettings (settings)
       end
 
       Info(string.format('Running command "%s"', command))
-      KismetSystemLibrary:ExecuteConsoleCommand(PlayerController.player, command, PlayerController)
+      KismetSystemLibrary:ExecuteConsoleCommand(PlayerController.player, command, PlayerController, nil)
     end
 
     -- Unhook once the function has been called once
