@@ -1,7 +1,7 @@
 -- Import library functions globaly
 require('lib')
 
--- Import config and INI parsing library
+-- Import config
 local config = require('config')
 
 -- Print mod version and author on load
